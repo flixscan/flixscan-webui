@@ -37,7 +37,8 @@ const DrawerHeader = styled('div')(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'flex-end',
-  padding: theme.spacing(0, 1),
+  borderBottom:'1px solid #ddd',
+  padding: theme.spacing(0, 1.5),
   ...theme.mixins.toolbar,
 }));
 
@@ -68,11 +69,11 @@ const Sidebar = ({ open, handleDrawerToggle, menuItem }) => {
         </DrawerHeader>
         <List>
           {menuItem.map((item, index) => (
-            <Link style={{ textDecoration: 'none', color: '#000' }} to={item.path} key={index}>
+            <Link style={{ textDecoration: 'none', color: '#000'}} to={item.path} key={index}>
               <ListItem key={item.name} disablePadding sx={{ display: 'block' }}>
-                <ListItemButton sx={{ minHeight: 55, justifyContent: open ? 'initial' : 'center', px: 2.5, flexDirection: open ? 'row' : 'column' }}>
-                  <ListItemIcon sx={{ minWidth: 0, mr: open ? 2 : 'auto', justifyContent: 'center', fontSize: '.712rem' }} >{item.icon} </ListItemIcon>
-                  <Typography sx={{ fontSize: open ? '15px' : '8px' }}>{item.name} </Typography>
+                <ListItemButton sx={{ minHeight: 60, justifyContent: open ? 'initial' : 'center', px: 2.5, flexDirection: open ? 'row' : 'column' }}>
+                  <ListItemIcon sx={{ minWidth: 0, mr: open ? 2 : 'auto',color:'#585858'}} >{item.icon} </ListItemIcon>
+                  <Typography sx={{ fontSize: open ? '15px' : '9px',color:'gray' }}>{item.name} </Typography>
                 </ListItemButton>
               </ListItem>
             </Link>

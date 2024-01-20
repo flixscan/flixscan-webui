@@ -8,7 +8,7 @@ import { Person, Logout } from '@mui/icons-material';
 
 const Header = ({ handleLogout }) => {
   return (
-    <MuiAppBar position="fixed" elevation={1} sx={{ zIndex: 100, backgroundColor: '#fff', color: 'black' }}>
+    <MuiAppBar position="fixed" elevation={1} sx={{ zIndex: 1, backgroundColor: '#585858', height:'200px', color: 'white' }}>
       <Toolbar>
         <IconButton size="large" edge="start" color="inherit" aria-label="menu" sx={{ mr: 2 }}></IconButton>
         <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}></Typography>

@@ -140,12 +140,13 @@ const Product = () => {
           <Divider />
           <div style={{ height: 'auto', width: '100%' }}>
             <Button onClick={() => openDialog(null)} startIcon={<Add />} className="lowercaseText" variant="contained" color="error" sx={{ marginY: 3 }}>Add New Store</Button>
-            <DataGrid rows={rows} columns={columns} initialState={{
+            <DataGrid  rows={rows} columns={columns} initialState={{
               pagination: { paginationModel: { pageSize: 50 } },
             }}
               pageSizeOptions={[50, 75, 100]}
               checkboxSelection
               disableSelectionOnClick
+              autoHeight
             />
           </div>
         </CardContent >
@@ -154,13 +155,6 @@ const Product = () => {
       <Dialog open={isDialogOpen} onClose={closeDialog}>
         <DialogTitle>{selectedRow ? 'Edit Store' : 'Add New Store'}</DialogTitle>
         <DialogContent>
-          {/* {Object.keys(formData).map((field) => (
-           <TextField id="outlined-basic" variant="outlined"   key={field} fullWidth label={field} name={field} 
-           value={formData[field]}
-           onChange={handleChange}
-           margin="normal"
-          />
-        ))} */}
           <TextField
             name="storeName"
             label="Store Name"

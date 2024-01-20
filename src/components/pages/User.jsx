@@ -141,6 +141,7 @@ const User = () => {
               pageSizeOptions={[50, 75, 100]}
               checkboxSelection
               disableSelectionOnClick
+              autoHeight
             />
           </div>
         </CardContent >

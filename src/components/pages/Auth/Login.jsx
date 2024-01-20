@@ -68,11 +68,7 @@ const Login = ({ onLogin }) => {
                 <Typography variant='h5' fontWeight={"bold"}>
                 Sign In
                 </Typography>
-             
-                <Typography color={theme.palette.secondary.main} variant='h5' fontWeight={"bold"}>
-                  Hi, Welcome Back
-                </Typography>
-
+          
                 <Typography variant="caption" fontSize="16px" textAlign={'center'}>
                   Enter your credentials to continue
                 </Typography>
@@ -114,6 +110,7 @@ const Login = ({ onLogin }) => {
                 </Grid>
                 <Button
                   type="submit"
+                 
                   fullWidth
                   variant="contained"
                   sx={{ mt: 3, mb: 2 }}

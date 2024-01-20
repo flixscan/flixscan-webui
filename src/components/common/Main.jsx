@@ -86,7 +86,7 @@ const Main = ({ children }) => {
       <Header handleLogout={handleLogout} />
       <Box sx={{ display: 'flex', backgroundColor: '#f1f1f1', height: '100vh', overflow: 'auto', m: -1 }}>
         <Sidebar open={open} handleDrawerToggle={handleDrawerToggle} menuItem={menuItem} />
-        <Box component="main" sx={{ flexGrow: 1, p: 5, mt: 10 }}>
+        <Box component="main" sx={{ flexGrow: 1, p: 5, mt: 10, zIndex:'100'}}>
           {children}
         </Box>
       </Box>
