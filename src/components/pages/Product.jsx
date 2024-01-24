@@ -18,7 +18,7 @@ const Product = () => {
     // View Data
     const fetchData = async () => {
       try {
-        const response = await axios.get(`${apiUrl}/stores`);
+        const response = await axios.get(`${apiUrl}/products`);
         setRows(response.data);
         setIsLoading(false);
       } catch (error) {
@@ -36,12 +36,12 @@ const Product = () => {
         const updatedRows = rows.map((row) =>
           row.id === selectedRow.id ? { ...row, ...formData } : row,
         );
-        await axios.put(`${apiUrl}/stores/${formData.id}`, formData);
+        await axios.put(`${apiUrl}/products/${formData.id}`, formData);
         setRows(updatedRows);
       } else {
         // Create new row
         const newRow = { id: Date.now(), ...formData };
-        const response = await axios.post(`${apiUrl}/stores/`, formData);
+        const response = await axios.post(`${apiUrl}/products/`, formData);
         const newId = response.data.id;
         newRow.id = newId;
         setRows([...rows, newRow]);
@@ -53,19 +53,12 @@ const Product = () => {
   };
 
   const handleDeleteRow = async (id) => {
-    // try {
-    //   const updatedRows = rows.filter((row) => row.id !== id);
-    //   await axios.delete(`${apiUrl}/organizations/${id}`);
-    //   setRows(updatedRows);
-    // } catch (error) {
-    //   console.log(error);
-    // }
     try {
       const idToDelete = rowToDeleteId;
 
       if (idToDelete !== null) {
         const updatedRows = rows.filter((row) => row.id !== idToDelete);
-        await axios.delete(`${apiUrl}/stores/${idToDelete}`);
+        await axios.delete(`${apiUrl}/products/${idToDelete}`);
         setRows(updatedRows);
         closeDeleteDialog();
       }
@@ -104,15 +97,7 @@ const Product = () => {
   };
 
   const columns = [
-    { field: 'storeName', headerName: 'Store Name', flex: 1 },
-    { field: 'storeCode', headerName: 'Store Code', flex: 1 },
-    { field: 'storeCountry', headerName: 'Store Country', flex: 1 },
-    { field: 'storeRegion', headerName: 'Store Region', flex: 1 },
-    { field: 'storeCity', headerName: 'Store City', flex: 1 },
-    { field: 'storePhone', headerName: 'Store Phone', flex: 1 },
-    { field: 'storeEmail', headerName: 'Store Email', flex: 1 },
-    { field: 'epaperCount', headerName: 'Linked Epaper', flex: 1 },
-    { field: 'gatewayCount', headerName: 'Linked Gateway', flex: 1 },
+    { field: 'product_attribute', headerName: 'Product Attribute', flex: 1 },
     {
       field: 'actions',
       headerName: 'Actions',
@@ -139,7 +124,7 @@ const Product = () => {
           </Typography>
           <Divider />
           <div style={{ height: 'auto', width: '100%' }}>
-            <Button onClick={() => openDialog(null)} startIcon={<Add />} className="lowercaseText" variant="contained" color="error" sx={{ marginY: 3 }}>Add New Store</Button>
+            <Button onClick={() => openDialog(null)} startIcon={<Add />} className="lowercaseText" variant="contained" color="error" sx={{ marginY: 3 }}>Add Product</Button>
             <DataGrid  rows={rows} columns={columns} initialState={{
               pagination: { paginationModel: { pageSize: 50 } },
             }}
@@ -153,7 +138,7 @@ const Product = () => {
       </Card>
 
       <Dialog open={isDialogOpen} onClose={closeDialog}>
-        <DialogTitle>{selectedRow ? 'Edit Store' : 'Add New Store'}</DialogTitle>
+        <DialogTitle>{selectedRow ? 'Edit Product' : 'Add Product'}</DialogTitle>
         <DialogContent>
           <TextField
             name="storeName"
