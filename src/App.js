@@ -6,7 +6,7 @@ import Organization from './components/pages/Organization';
 import Store from './components/pages/Store';
 import Rack from './components/pages/Rack';
 import Area from './components/pages/Area';
-import Template from './components/pages/Template';
+import Template from './components/pages/Template/Template';
 import Product from './components/pages/Product';
 import User from './components/pages/User';
 import Role from './components/pages/Role';

@@ -2,9 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
 import {
   Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField, Card, CardContent,
-  Typography, Divider, LinearProgress, Box
+  Typography, Divider, LinearProgress, Box,Paper
 } from '@mui/material';
 import { Delete, DriveFileRenameOutline, Add, Photo } from '@mui/icons-material';
+
+import Dropzone from './Dropzone';
 import axios from 'axios';
 
 const apiUrl = process.env.REACT_APP_API_URL;
@@ -17,6 +19,9 @@ const Template = () => {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
   const [rowToDeleteId, setRowToDeleteId] = useState(null);
+  // Base64 string data
+const data = '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'
+
 
   useEffect(() => {
     // View Data
@@ -143,14 +148,31 @@ const Template = () => {
 
   return (
     <div>
+ <Card>
+        <CardContent>
+          <Typography sx={{ fontSize: 20 }} color="text.secondary" gutterBottom>
+            Add Template
+          </Typography>
+          <Divider />
+          
+          <div style={{ height: 'auto', width: '100%' }}>
+            <Button onClick={() => openDialog(null)} startIcon={<Add />} className="lowercaseText" variant="contained" color="error" sx={{ marginY: 3 }}>Add Template</Button>
+            <Box  sx={{ marginBottom: 8 }}>
+          <Dropzone/>
+          </Box>
+          </div>
+        </CardContent >
+      </Card>
+      <br/>
       <Card>
         <CardContent>
           <Typography sx={{ fontSize: 20 }} color="text.secondary" gutterBottom>
-            Template
+            Template List
           </Typography>
           <Divider />
+          
           <div style={{ height: 'auto', width: '100%' }}>
-            <Button onClick={() => openDialog(null)} startIcon={<Add />} className="lowercaseText" variant="contained" color="error" sx={{ marginY: 3 }}>Add Template</Button>
+           
             <DataGrid rows={rows} columns={columns} initialState={{
               pagination: { paginationModel: { pageSize: 50 } },
             }}
@@ -166,6 +188,10 @@ const Template = () => {
       <Dialog open={isViewDialogOpen} onClose={closeViewDialog} maxWidth="lg">
         <DialogTitle>Template View</DialogTitle>
         <DialogContent>
+        <Paper elevation={3}>
+        <img src={`data:image/png;base64,${data}`} />
+         </Paper>
+
           <Box omponent="form"
             sx={{
               '& > :not(style)': { m: 1, width: '30ch' },
@@ -189,9 +215,11 @@ const Template = () => {
       </Dialog>
 
 
-      <Dialog open={isDialogOpen} onClose={closeDialog}>
+      <Dialog open={isDialogOpen} onClose={closeDialog} maxWidth="lg">
         <DialogTitle>{selectedRow ? 'Edit Template' : 'Add Template'}</DialogTitle>
         <DialogContent>
+          <Dropzone/>
+
           <TextField
             name="templateName"
             label="Template Name"
