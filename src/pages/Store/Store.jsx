@@ -1,34 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
-import {
-  Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField, Card, CardContent,
-  Typography, Divider, LinearProgress, Box, Paper
-} from '@mui/material';
-import { Delete, DriveFileRenameOutline, Add, Photo } from '@mui/icons-material';
-
-import Dropzone from './Dropzone';
+import { Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField, Card, CardContent, Typography, Divider } from '@mui/material';
+import { Delete, DriveFileRenameOutline, Add } from '@mui/icons-material';
 import axios from 'axios';
 
 const apiUrl = process.env.REACT_APP_API_URL;
-const Template = () => {
+const Store = () => {
   const [rows, setRows] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
   const [selectedRow, setSelectedRow] = useState(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [formData, setFormData] = useState({});
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-  const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
   const [rowToDeleteId, setRowToDeleteId] = useState(null);
-
- 
 
   useEffect(() => {
     // View Data
     const fetchData = async () => {
       try {
-        const response = await axios.get(`${apiUrl}/templates`);
+        const response = await axios.get(`${apiUrl}/stores`);
         setRows(response.data);
-        setIsLoading(false);
       } catch (error) {
         console.error(error);
       }
@@ -44,12 +34,12 @@ const Template = () => {
         const updatedRows = rows.map((row) =>
           row.id === selectedRow.id ? { ...row, ...formData } : row,
         );
-        await axios.put(`${apiUrl}/templates/${formData.id}`, formData);
+        await axios.put(`${apiUrl}/stores/${formData.id}`, formData);
         setRows(updatedRows);
       } else {
         // Create new row
         const newRow = { id: Date.now(), ...formData };
-        const response = await axios.post(`${apiUrl}/templates/`, formData);
+        const response = await axios.post(`${apiUrl}/stores/`, formData);
         const newId = response.data.id;
         newRow.id = newId;
         setRows([...rows, newRow]);
@@ -61,12 +51,19 @@ const Template = () => {
   };
 
   const handleDeleteRow = async (id) => {
+    // try {
+    //   const updatedRows = rows.filter((row) => row.id !== id);
+    //   await axios.delete(`${apiUrl}/organizations/${id}`);
+    //   setRows(updatedRows);
+    // } catch (error) {
+    //   console.log(error);
+    // }
     try {
       const idToDelete = rowToDeleteId;
 
       if (idToDelete !== null) {
         const updatedRows = rows.filter((row) => row.id !== idToDelete);
-        await axios.delete(`${apiUrl}/templates/${idToDelete}`);
+        await axios.delete(`${apiUrl}/stores/${idToDelete}`);
         setRows(updatedRows);
         closeDeleteDialog();
       }
@@ -99,76 +96,44 @@ const Template = () => {
     setIsDeleteDialogOpen(false);
   };
 
-  const openViewDialog = (rowData) => {
-    // setRowToDeleteId(id);
-    setSelectedRow(rowData || null);
-    setFormData(rowData || {});
-    setIsViewDialogOpen(true);
-
-
-    //  Object.keys(JSON.parse(rowData.templateAttribute)).map((field) => (
-    //     console.log(field)
-    //   ))
-  };
-
-  const closeViewDialog = () => {
-    // setRowToDeleteId(null);
-    setIsViewDialogOpen(false);
-  };
-
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const columns = [
-    { field: 'templateName', headerName: 'Template Name', flex: 1 },
-    { field: 'templateDetails', headerName: 'Template Details', flex: 1 },
-    { field: 'templateAttribute', headerName: 'Template Attribute', flex: 1 },
-    { field: 'linkedProduct', headerName: 'Linked Product', flex: 1 },
-
+    { field: 'storeName', headerName: 'Store Name', flex: 1 },
+    { field: 'storeCode', headerName: 'Store Code', flex: 1 },
+    { field: 'storeCountry', headerName: 'Store Country', flex: 1 },
+    { field: 'storeRegion', headerName: 'Store Region', flex: 1 },
+    { field: 'storeCity', headerName: 'Store City', flex: 1 },
+    { field: 'storePhone', headerName: 'Store Phone', flex: 1 },
+    { field: 'storeEmail', headerName: 'Store Email', flex: 1 },
+    { field: 'epaperCount', headerName: 'Linked Epaper', flex: 1 },
+    { field: 'gatewayCount', headerName: 'Linked Gateway', flex: 1 },
     {
       field: 'actions',
       headerName: 'Actions',
-      width: 300,
+      width: 200,
       renderCell: (params) => (
         <div>
-          <Button onClick={() => openViewDialog(params.row)} startIcon={<Photo />} color="error" className='lowercaseText'>View</Button>
-          <Button onClick={() => openDialog(params.row)} startIcon={<DriveFileRenameOutline />} color="error" className='lowercaseText'>Edit</Button>
           <Button onClick={() => openDeleteDialog(params.id)} startIcon={<Delete />} color="error" className='lowercaseText'>Delete</Button>
+          <Button onClick={() => openDialog(params.row)} startIcon={<DriveFileRenameOutline />} color="error" className='lowercaseText'>Edit</Button>
         </div>
       ),
     },
   ];
-
-  if (isLoading) {
-    return <div>Loading ..<LinearProgress /></div>;
-  }
 
   return (
     <div>
       <Card>
         <CardContent>
           <Typography sx={{ fontSize: 20 }} color="text.secondary" gutterBottom>
-            Add Template
+            Store
           </Typography>
           <Divider />
           <div style={{ height: 'auto', width: '100%' }}>
-            <Button onClick={() => openDialog(null)} startIcon={<Add />} className="lowercaseText" variant="contained" color="error" sx={{ marginY: 3 }}>Add Template</Button>
-            <Box sx={{ marginBottom: 8 }}>
-              <Dropzone />
-            </Box>
-          </div>
-        </CardContent >
-      </Card>
-      <br />
-      <Card>
-        <CardContent>
-          <Typography sx={{ fontSize: 20 }} color="text.secondary" gutterBottom>
-            Template List
-          </Typography>
-          <Divider />
-          <div style={{ height: 'auto', width: '100%' }}>
+            <Button onClick={() => openDialog(null)} startIcon={<Add />} className="lowercaseText" variant="contained" color="error" sx={{ marginY: 3 }}>Add New Store</Button>
             <DataGrid rows={rows} columns={columns} initialState={{
               pagination: { paginationModel: { pageSize: 50 } },
             }}
@@ -181,56 +146,84 @@ const Template = () => {
         </CardContent >
       </Card>
 
-      <Dialog open={isViewDialogOpen} onClose={closeViewDialog} maxWidth="lg">
-        <DialogTitle>Template View</DialogTitle>
+      <Dialog open={isDialogOpen} onClose={closeDialog}>
+        <DialogTitle>{selectedRow ? 'Edit Store' : 'Add New Store'}</DialogTitle>
         <DialogContent>
-
-          <Box omponent="form"
-            sx={{
-              '& > :not(style)': { m: 1, width: '30ch' },
-            }}
-            noValidate>
-            {selectedRow && selectedRow.templateAttribute && Object.keys(JSON.parse(selectedRow.templateAttribute)).map((field) => (
-              <TextField id="outlined-basic" variant="outlined" key={field} fullWidth label={field} name={field}
-                value={formData[field]}
-                onChange={handleChange}
-                margin="normal"
-              />
-            ))}
-          </Box>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={closeViewDialog}>Cancel</Button>
-          <Button onClick={handleSave} variant="contained" color="error">
-            Save
-          </Button>
-        </DialogActions>
-      </Dialog>
-
-      <Dialog open={isDialogOpen} onClose={closeDialog} maxWidth="lg">
-        <DialogTitle>{selectedRow ? 'Edit Template' : 'Add Template'}</DialogTitle>
-        <DialogContent>
-          <Dropzone />
+          {/* {Object.keys(formData).map((field) => (
+           <TextField id="outlined-basic" variant="outlined"   key={field} fullWidth label={field} name={field} 
+           value={formData[field]}
+           onChange={handleChange}
+           margin="normal"
+          />
+        ))} */}
           <TextField
-            name="templateName"
-            label="Template Name"
-            value={formData.templateName || ''}
+            name="storeName"
+            label="Store Name"
+            value={formData.storeName || ''}
             onChange={handleChange}
             fullWidth
             margin="normal"
           />
           <TextField
-            name="templateDetails"
-            label="Template Details"
-            value={formData.templateDetails || ''}
+            name="storeCode"
+            label="Store Code"
+            value={formData.storeCode || ''}
             onChange={handleChange}
             fullWidth
             margin="normal"
           />
           <TextField
-            name="templateAttribute"
-            label="Templata Attribute"
-            value={formData.templateAttribute || ''}
+            name="storeCountry"
+            label="Store Country"
+            value={formData.storeCountry || ''}
+            onChange={handleChange}
+            fullWidth
+            margin="normal"
+          />
+          <TextField
+            name="storeRegion"
+            label="Store Region"
+            value={formData.storeRegion || ''}
+            onChange={handleChange}
+            fullWidth
+            margin="normal"
+          />
+          <TextField
+            name="storeCity"
+            label="Store City"
+            value={formData.storeCity || ''}
+            onChange={handleChange}
+            fullWidth
+            margin="normal"
+          />
+          <TextField
+            name="storePhone"
+            label="Store Phone"
+            value={formData.storePhone || ''}
+            onChange={handleChange}
+            fullWidth
+            margin="normal"
+          />
+          <TextField
+            name="storeEmail"
+            label="Store Email"
+            value={formData.storeEmail || ''}
+            onChange={handleChange}
+            fullWidth
+            margin="normal"
+          />
+          <TextField
+            name="epaperCount"
+            label="Total Linked Epaper"
+            value={formData.epaperCount || ''}
+            onChange={handleChange}
+            fullWidth
+            margin="normal"
+          />
+          <TextField
+            name="gatewayCount"
+            label="Total Linked Gateway"
+            value={formData.gatewayCount || ''}
             onChange={handleChange}
             fullWidth
             margin="normal"
@@ -262,4 +255,4 @@ const Template = () => {
   );
 };
 
-export default Template
+export default Store

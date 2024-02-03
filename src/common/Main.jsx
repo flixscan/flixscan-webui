@@ -7,9 +7,11 @@ import {
 import Header from './Header';
 import Sidebar from './Sidebar';
 
+// loader style
+
+
 const Main = ({ children }) => {
   const [isLoggedIn, setLoggedIn] = useState(false);
-
 
   const handleLogout = () => {
     setLoggedIn(false);
@@ -80,15 +82,21 @@ const Main = ({ children }) => {
   const handleDrawerToggle = () => {
     setOpen(!open);
   };
-
+    
+ 
   return (
     <>
       <Header handleLogout={handleLogout} />
+      {/* <Suspense fallback={<LoaderWrapper><LinearProgress/></LoaderWrapper>}>   </Suspense> */}
       <Box sx={{ display: 'flex', backgroundColor: '#f1f1f1', height: '100vh', overflow: 'auto', m: -1 }}>
         <Sidebar open={open} handleDrawerToggle={handleDrawerToggle} menuItem={menuItem} />
+       
         <Box component="main" sx={{ flexGrow: 1, p: 5, mt: 10, zIndex:'100'}}>
+      
           {children}
+       
         </Box>
+        
       </Box>
     </>
   );

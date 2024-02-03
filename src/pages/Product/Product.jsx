@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
-import { Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField, Card, CardContent, Typography, Divider, LinearProgress } from '@mui/material';
+import { Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField, Card, CardContent, Typography, Divider} from '@mui/material';
 import { Delete, DriveFileRenameOutline, Add } from '@mui/icons-material';
 import axios from 'axios';
 
 const apiUrl = process.env.REACT_APP_API_URL;
-const Epaper = () => {
+const Product = () => {
   const [rows, setRows] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
   const [selectedRow, setSelectedRow] = useState(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [formData, setFormData] = useState({});
@@ -18,9 +17,8 @@ const Epaper = () => {
     // View Data
     const fetchData = async () => {
       try {
-        const response = await axios.get(`${apiUrl}/racks`);
+        const response = await axios.get(`${apiUrl}/products`);
         setRows(response.data);
-        setIsLoading(false);
       } catch (error) {
         console.error(error);
       }
@@ -36,12 +34,12 @@ const Epaper = () => {
         const updatedRows = rows.map((row) =>
           row.id === selectedRow.id ? { ...row, ...formData } : row,
         );
-        await axios.put(`${apiUrl}/racks/${formData.id}`, formData);
+        await axios.put(`${apiUrl}/products/${formData.id}`, formData);
         setRows(updatedRows);
       } else {
         // Create new row
         const newRow = { id: Date.now(), ...formData };
-        const response = await axios.post(`${apiUrl}/racks/`, formData);
+        const response = await axios.post(`${apiUrl}/products/`, formData);
         const newId = response.data.id;
         newRow.id = newId;
         setRows([...rows, newRow]);
@@ -55,9 +53,10 @@ const Epaper = () => {
   const handleDeleteRow = async (id) => {
     try {
       const idToDelete = rowToDeleteId;
+
       if (idToDelete !== null) {
         const updatedRows = rows.filter((row) => row.id !== idToDelete);
-        await axios.delete(`${apiUrl}/racks/${idToDelete}`);
+        await axios.delete(`${apiUrl}/products/${idToDelete}`);
         setRows(updatedRows);
         closeDeleteDialog();
       }
@@ -65,6 +64,7 @@ const Epaper = () => {
       console.error('Error deleting row:', error);
       // Handle error (e.g., show an error message)
     }
+
   };
 
   const openDialog = (rowData) => {
@@ -95,13 +95,7 @@ const Epaper = () => {
   };
 
   const columns = [
-    { field: 'rackName', headerName: 'Rack Name', flex: 1 },
-    { field: 'rackDetails', headerName: 'Rack Details', flex: 1 },
-    { field: 'rackArea', headerName: 'Rack Area', flex: 1 },
-    { field: 'rackImage', headerName: 'Rack Image', flex: 1 },
-    { field: 'epaperCount', headerName: 'Total Linked Epaper', flex: 1 },
-    { field: 'gatewayCount', headerName: 'Total Linked Gateway', flex: 1 },
-    { field: 'storeId', headerName: 'Store Id', flex: 1 },
+    { field: 'product_attribute', headerName: 'Product Attribute', flex: 1 },
     {
       field: 'actions',
       headerName: 'Actions',
@@ -115,21 +109,18 @@ const Epaper = () => {
     },
   ];
 
-  if (isLoading) {
-    return <div>Loading ..<LinearProgress /></div>;
-  }
 
   return (
     <div>
       <Card>
         <CardContent>
           <Typography sx={{ fontSize: 20 }} color="text.secondary" gutterBottom>
-            EPaper
+            Product
           </Typography>
           <Divider />
           <div style={{ height: 'auto', width: '100%' }}>
-            <Button onClick={() => openDialog(null)} startIcon={<Add />} className="lowercaseText" variant="contained" color="error" sx={{ marginY: 3 }}>Add New Epaper</Button>
-            <DataGrid rows={rows} columns={columns} initialState={{
+            <Button onClick={() => openDialog(null)} startIcon={<Add />} className="lowercaseText" variant="contained" color="error" sx={{ marginY: 3 }}>Add Product</Button>
+            <DataGrid  rows={rows} columns={columns} initialState={{
               pagination: { paginationModel: { pageSize: 50 } },
             }}
               pageSizeOptions={[50, 75, 100]}
@@ -142,28 +133,88 @@ const Epaper = () => {
       </Card>
 
       <Dialog open={isDialogOpen} onClose={closeDialog}>
-        <DialogTitle>{selectedRow ? 'Edit Eaper' : 'Add New Epaper'}</DialogTitle>
+        <DialogTitle>{selectedRow ? 'Edit Product' : 'Add Product'}</DialogTitle>
         <DialogContent>
           <TextField
-            name="rackName"
-            label="Rack Name"
-            value={formData.rackName || ''}
+            name="storeName"
+            label="Store Name"
+            value={formData.storeName || ''}
             onChange={handleChange}
             fullWidth
             margin="normal"
           />
           <TextField
-            name="rackDetails"
-            label="Rack Details"
-            value={formData.rackDetails || ''}
+            name="storeCode"
+            label="Store Code"
+            value={formData.storeCode || ''}
             onChange={handleChange}
             fullWidth
             margin="normal"
           />
           <TextField
-            name="rackArea"
-            label="Rack Area"
-            value={formData.rackArea || ''}
+            name="storeCountry"
+            label="Store Country"
+            value={formData.storeCountry || ''}
+            onChange={handleChange}
+            fullWidth
+            margin="normal"
+          />
+          <TextField
+            name="organizationPhone"
+            label="Organization Phone"
+            value={formData.organizationPhone || ''}
+            onChange={handleChange}
+            fullWidth
+            margin="normal"
+          />
+
+          <TextField
+            name="storeRegion"
+            label="Store Region"
+            value={formData.storeRegion || ''}
+            onChange={handleChange}
+            fullWidth
+            margin="normal"
+          />
+
+          <TextField
+            name="storeCity"
+            label="Store City"
+            value={formData.storeCity || ''}
+            onChange={handleChange}
+            fullWidth
+            margin="normal"
+          />
+
+          <TextField
+            name="storePhone"
+            label="Store Phone"
+            value={formData.storePhone || ''}
+            onChange={handleChange}
+            fullWidth
+            margin="normal"
+          />
+          <TextField
+            name="storeEmail"
+            label="Store Email"
+            value={formData.storeEmail || ''}
+            onChange={handleChange}
+            fullWidth
+            margin="normal"
+          />
+          <TextField
+            name="epaperCount"
+            label="Total Linked Epaper"
+            value={formData.epaperCount || ''}
+            onChange={handleChange}
+            fullWidth
+            margin="normal"
+          />
+
+          <TextField
+            name="gatewayCount"
+            label="Total Linked Gateway"
+            value={formData.gatewayCount || ''}
             onChange={handleChange}
             fullWidth
             margin="normal"
@@ -180,7 +231,7 @@ const Epaper = () => {
       <Dialog open={isDeleteDialogOpen} onClose={closeDeleteDialog}>
         <DialogTitle>Confirm Delete</DialogTitle>
         <DialogContent>
-          Are you sure you want to delete this rack?
+          Are you sure you want to delete this store?
         </DialogContent>
         <DialogActions>
           <Button onClick={closeDeleteDialog} color="primary">
@@ -195,4 +246,4 @@ const Epaper = () => {
   );
 };
 
-export default Epaper
+export default Product

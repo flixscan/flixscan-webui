@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
-import { Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField, Card, CardContent, Typography, Divider, LinearProgress } from '@mui/material';
+import { Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField, Card, CardContent, Typography, Divider} from '@mui/material';
 import { Delete, DriveFileRenameOutline, Add } from '@mui/icons-material';
 
 import axios from 'axios';
@@ -8,7 +8,6 @@ import axios from 'axios';
 const apiUrl = process.env.REACT_APP_API_URL;
 const Organization = () => {
   const [rows, setRows] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
   const [selectedRow, setSelectedRow] = useState(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [formData, setFormData] = useState({});
@@ -21,7 +20,6 @@ const Organization = () => {
       try {
         const response = await axios.get(`${apiUrl}/organizations`);
         setRows(response.data);
-        setIsLoading(false);
       } catch (error) {
         console.error(error);
       }
@@ -123,11 +121,6 @@ const Organization = () => {
       ),
     },
   ];
-
-  if (isLoading) {
-    return <div>Loading ..<LinearProgress /></div>;
-  }
-
   return (
     <div>
       <Card>

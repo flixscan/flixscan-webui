@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
-import { Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField, Card, CardContent, Typography, Divider, LinearProgress } from '@mui/material';
+import { Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField, Card, CardContent, Typography, Divider } from '@mui/material';
 import { Delete, DriveFileRenameOutline, Add } from '@mui/icons-material';
 import axios from 'axios';
 
 const apiUrl = process.env.REACT_APP_API_URL;
-const Area = () => {
+const User = () => {
   const [rows, setRows] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
   const [selectedRow, setSelectedRow] = useState(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [formData, setFormData] = useState({});
@@ -18,9 +17,8 @@ const Area = () => {
     // View Data
     const fetchData = async () => {
       try {
-        const response = await axios.get(`${apiUrl}/areas`);
+        const response = await axios.get(`${apiUrl}/users`);
         setRows(response.data);
-        setIsLoading(false);
       } catch (error) {
         console.error(error);
       }
@@ -36,12 +34,12 @@ const Area = () => {
         const updatedRows = rows.map((row) =>
           row.id === selectedRow.id ? { ...row, ...formData } : row,
         );
-        await axios.put(`${apiUrl}/areas/${formData.id}`, formData);
+        await axios.put(`${apiUrl}/users/${formData.id}`, formData);
         setRows(updatedRows);
       } else {
         // Create new row
         const newRow = { id: Date.now(), ...formData };
-        const response = await axios.post(`${apiUrl}/areas/`, formData);
+        const response = await axios.post(`${apiUrl}/users/`, formData);
         const newId = response.data.id;
         newRow.id = newId;
         setRows([...rows, newRow]);
@@ -62,10 +60,9 @@ const Area = () => {
     // }
     try {
       const idToDelete = rowToDeleteId;
-
       if (idToDelete !== null) {
         const updatedRows = rows.filter((row) => row.id !== idToDelete);
-        await axios.delete(`${apiUrl}/areas/${idToDelete}`);
+        await axios.delete(`${apiUrl}/users/${idToDelete}`);
         setRows(updatedRows);
         closeDeleteDialog();
       }
@@ -104,12 +101,11 @@ const Area = () => {
   };
 
   const columns = [
-    { field: 'areaName', headerName: 'Area Name', flex: 1 },
-    { field: 'areaDescription', headerName: 'Area Description', flex: 1 },
-    { field: 'areaCode', headerName: 'Area Code', flex: 1 },
-    { field: 'linkedRack', headerName: 'Linked Rack', flex: 1 },
-    { field: 'epaperCount', headerName: 'Total Linked Epapers', flex: 1 },
-    { field: 'gatewayCount', headerName: 'Total Linked Gateways', flex: 1 },
+    { field: 'userFirstName', headerName: 'User First Name', flex: 1 },
+    { field: 'userLastName', headerName: 'User Last Name', flex: 1 },
+    { field: 'userEmail', headerName: 'User Email', flex: 1 },
+    { field: 'userMobile', headerName: 'User Mobile', flex: 1 },
+    { field: 'userRoles', headerName: 'User Role', flex: 1 },
     {
       field: 'actions',
       headerName: 'Actions',
@@ -123,20 +119,16 @@ const Area = () => {
     },
   ];
 
-  if (isLoading) {
-    return <div>Loading ..<LinearProgress /></div>;
-  }
-
   return (
     <div>
       <Card>
         <CardContent>
           <Typography sx={{ fontSize: 20 }} color="text.secondary" gutterBottom>
-            Area
+            User
           </Typography>
           <Divider />
           <div style={{ height: 'auto', width: '100%' }}>
-            <Button onClick={() => openDialog(null)} startIcon={<Add />} className="lowercaseText" variant="contained" color="error" sx={{ marginY: 3 }}>Add New Area</Button>
+            <Button onClick={() => openDialog(null)} startIcon={<Add />} className="lowercaseText" variant="contained" color="error" sx={{ marginY: 3 }}>Add New User</Button>
             <DataGrid rows={rows} columns={columns} initialState={{
               pagination: { paginationModel: { pageSize: 50 } },
             }}
@@ -150,7 +142,7 @@ const Area = () => {
       </Card>
 
       <Dialog open={isDialogOpen} onClose={closeDialog}>
-        <DialogTitle>{selectedRow ? 'Edit Area' : 'Add New Area'}</DialogTitle>
+        <DialogTitle>{selectedRow ? 'Edit User' : 'Add New User'}</DialogTitle>
         <DialogContent>
           {/* {Object.keys(formData).map((field) => (
            <TextField id="outlined-basic" variant="outlined"   key={field} fullWidth label={field} name={field} 
@@ -160,25 +152,65 @@ const Area = () => {
           />
         ))} */}
           <TextField
-            name="areaName"
-            label="Area Name"
-            value={formData.areaName || ''}
+            name="userFirstName"
+            label="User First Name"
+            value={formData.userFirstName || ''}
             onChange={handleChange}
             fullWidth
             margin="normal"
           />
           <TextField
-            name="areaDescription"
-            label="Area Description"
-            value={formData.areaDescription || ''}
+            name="userLastName"
+            label="User Last Name"
+            value={formData.userLastName || ''}
             onChange={handleChange}
             fullWidth
             margin="normal"
           />
           <TextField
-            name="areaCode"
-            label="Area Code"
-            value={formData.areaCode || ''}
+            name="userEmail"
+            label="User Email"
+            value={formData.userEmail || ''}
+            onChange={handleChange}
+            fullWidth
+            margin="normal"
+          />
+          <TextField
+            name="userPass"
+            label="User Pass"
+            value={formData.userPass || ''}
+            onChange={handleChange}
+            fullWidth
+            margin="normal"
+          />
+          <TextField
+            name="userMobile"
+            label="User Mobile"
+            value={formData.userMobile || ''}
+            onChange={handleChange}
+            fullWidth
+            margin="normal"
+          />
+          <TextField
+            name="userRoles"
+            label="User Roles"
+            value={formData.userRoles || ''}
+            onChange={handleChange}
+            fullWidth
+            margin="normal"
+          />
+          <TextField
+            name="isActive"
+            label="User Active"
+            value={formData.isActive || ''}
+            onChange={handleChange}
+            fullWidth
+            margin="normal"
+          />
+          <TextField
+            name="isVerified"
+            label="User Verified"
+            value={formData.isVerified || ''}
             onChange={handleChange}
             fullWidth
             margin="normal"
@@ -195,7 +227,7 @@ const Area = () => {
       <Dialog open={isDeleteDialogOpen} onClose={closeDeleteDialog}>
         <DialogTitle>Confirm Delete</DialogTitle>
         <DialogContent>
-          Are you sure you want to delete this area?
+          Are you sure you want to delete this User?
         </DialogContent>
         <DialogActions>
           <Button onClick={closeDeleteDialog} color="primary">
@@ -210,4 +242,4 @@ const Area = () => {
   );
 };
 
-export default Area
+export default User

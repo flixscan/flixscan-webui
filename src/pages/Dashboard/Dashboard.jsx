@@ -5,10 +5,8 @@ import Typography from '@mui/material/Typography';
 import { Container, Grid, Paper } from '@mui/material';
 
 
-
 const Dashbord = () => {
   return (
-    
       <Card sx={{ minWidth: 275 }}>
         {/* <LinearProgress /> */}
         <CardContent>
